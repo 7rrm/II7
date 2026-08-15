@@ -491,6 +491,15 @@ public final class MeeroStrings {
         put("MeeroMenuWatchDiagDesc", "Off by default - turn on only when a menu misbehaves: it copies a technical report you can send to the developer", "مطفأ افتراضيًا — شغّله فقط إذا صارت مشكلة بقائمة: ينسخ تقريرًا فنيًا ترسله للمطور");
         put("MeeroIosAttachPanel", "iOS-style attach sheet", "لوحة إرفاق بنمط آيفون");
         put("MeeroIosAttachPanelDesc", "The attach panel's first face in iOS style: drag grabber and a grouped action list with colored icons", "الوجهة الأولى للوحة الإرفاق بشكل iOS: قبضة سحب وقائمة إجراءات مجمعة بأيقونات ملونة");
+        put("ChooseColor", "Choose icon color", "اختر لون الأيقونة");
+        put("ColorRed", "Red", "أحمر");
+        put("ColorOrange", "Orange", "برتقالي");
+        put("ColorBlue", "Blue", "أزرق");
+        put("ColorGreen", "Green", "أخضر");
+        put("ColorPurple", "Purple", "أرجواني");
+        put("ColorYellow", "Yellow", "أصفر");
+        put("ColorPink", "Pink", "وردي");
+        put("ColorGray", "Gray", "رمادي");
     }
 
     private static void put(String key, String en, String ar) {
@@ -976,6 +985,15 @@ public final class MeeroStrings {
         ID_TO_KEY.put(469, "MeeroMenuWatchDiagDesc");
         ID_TO_KEY.put(470, "MeeroIosAttachPanel");
         ID_TO_KEY.put(471, "MeeroIosAttachPanelDesc");
+        ID_TO_KEY.put(472, "ChooseColor");
+        ID_TO_KEY.put(473, "ColorRed");
+        ID_TO_KEY.put(474, "ColorOrange");
+        ID_TO_KEY.put(475, "ColorBlue");
+        ID_TO_KEY.put(476, "ColorGreen");
+        ID_TO_KEY.put(477, "ColorPurple");
+        ID_TO_KEY.put(478, "ColorYellow");
+        ID_TO_KEY.put(479, "ColorPink");
+        ID_TO_KEY.put(480, "ColorGray");
     }
 
     private static boolean isArabic() {
