@@ -199,7 +199,10 @@ public class TimeStringHelper {
         }
         if (deletedSpan == null) {
             deletedSpan = new SpannableStringBuilder("\u200B");
-            deletedSpan.setSpan(new ColoredImageSpan(deletedDrawable, true), 0, 1, 0);
+            ColoredImageSpan span = new ColoredImageSpan(deletedDrawable, true);
+            // ⭐ قراءة اللون من الإعدادات
+            span.setOverrideColor(getDeletedIconColor());
+            deletedSpan.setSpan(span, 0, 1, 0);
         }
 
         if (translatedDrawable == null) {
@@ -247,6 +250,15 @@ public class TimeStringHelper {
         return spannableStringBuilder;
     }
 
+    // دالة للحصول على لون الأيقونة من الإعدادات
+    private static int getDeletedIconColor() {
+        return NaConfig.INSTANCE.getDeletedIconColor().Int();
+    }
+    // دالة لإعادة تعيين الأيقونة (لتحديث اللون)
+    public static void resetDeletedSpan() {
+        deletedSpan = null;
+        deletedDrawable = null;
+    }
     public static SpannableStringBuilder getChannelLabelSpan() {
         if (channelLabelDrawable == null) {
             channelLabelDrawable = Objects.requireNonNull(ContextCompat.getDrawable(ApplicationLoader.applicationContext, R.drawable.channel_label_solar)).mutate();
