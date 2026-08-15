@@ -888,6 +888,12 @@ object NaConfig {
             ConfigItem.configTypeBool,
             true
         )
+    val deletedIconColor =
+        addConfig(
+            "DeletedIconColor",
+            ConfigItem.configTypeInt,
+            0xFFFF3B30  // أحمر (افتراضي)
+        )
     val useEditedIcon =
         addConfig(
             "UseEditedIcon",
