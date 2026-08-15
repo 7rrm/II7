@@ -72,6 +72,8 @@ import tw.nekomimi.nekogram.filters.RegexFiltersSettingActivity;
 import tw.nekomimi.nekogram.ui.PopupBuilder;
 import tw.nekomimi.nekogram.ui.cells.HeaderCell;
 import tw.nekomimi.nekogram.utils.ShareUtil;
+import tw.nekomimi.nekogram.MeeroStrings;
+import tw.nekomimi.nekogram.helpers.TimeStringHelper;
 import xyz.nextalone.nagram.NaConfig;
 
 @SuppressLint("RtlHardcoded")
@@ -79,6 +81,7 @@ import xyz.nextalone.nagram.NaConfig;
 public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity {
 
     private ListAdapter listAdapter;
+    private AbstractConfigCell deletedIconColorRow;
 
     @Override
     protected RecyclerListView.SelectionAdapter getListAdapter() {
@@ -260,6 +263,7 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
         listView.setAdapter(listAdapter);
 
         setupDefaultListeners();
+        deletedIconColorRow = cellGroup.appendCell(new ConfigCellText(MeeroStrings.s(472), () -> showColorPickerPopup()));
 
         // Cells: Set OnSettingChanged Callbacks
         cellGroup.callBackSettingsChanged = (key, newValue) -> {
@@ -722,23 +726,75 @@ public class NekoExperimentalSettingsActivity extends BaseNekoXSettingsActivity 
         if (listAdapter == null) {
             if (enabled) {
                 cellGroup.rows.remove(customDeletedMarkRow);
+                cellGroup.rows.remove(deletedIconColorRow);
             }
             return;
         }
         if (!enabled) {
+            // إخفاء زر اختيار اللون
+            if (cellGroup.rows.contains(deletedIconColorRow)) {
+                int idx = cellGroup.rows.indexOf(deletedIconColorRow);
+                cellGroup.rows.remove(deletedIconColorRow);
+                listAdapter.notifyItemRemoved(idx);
+            }
+            // إظهار customDeletedMark
             final int index = cellGroup.rows.indexOf(useDeletedIconRow);
             if (!cellGroup.rows.contains(customDeletedMarkRow)) {
                 cellGroup.rows.add(index + 1, customDeletedMarkRow);
                 listAdapter.notifyItemInserted(index + 1);
             }
         } else {
-            final int index = cellGroup.rows.indexOf(customDeletedMarkRow);
-            if (index != -1) {
+            // إخفاء customDeletedMark
+            int customIndex = cellGroup.rows.indexOf(customDeletedMarkRow);
+            if (customIndex != -1) {
                 cellGroup.rows.remove(customDeletedMarkRow);
-                listAdapter.notifyItemRemoved(index);
+                listAdapter.notifyItemRemoved(customIndex);
+            }
+            // إظهار زر اختيار اللون
+            final int index = cellGroup.rows.indexOf(useDeletedIconRow);
+            if (!cellGroup.rows.contains(deletedIconColorRow)) {
+                cellGroup.rows.add(index + 1, deletedIconColorRow);
+                listAdapter.notifyItemInserted(index + 1);
             }
         }
         addRowsToMap(cellGroup);
     }
-
+    private void showColorPickerPopup() {
+        if (getParentActivity() == null) return;
+        
+        AlertDialog.Builder builder = new AlertDialog.Builder(getParentActivity());
+        builder.setTitle(MeeroStrings.s(472)); // "اختر لون الأيقونة"
+        String[] colors = {
+            MeeroStrings.s(473) + " 🔴",  // أحمر
+            MeeroStrings.s(474) + " 🟠",  // برتقالي
+            MeeroStrings.s(475) + " 🔵",  // أزرق
+            MeeroStrings.s(476) + " 🟢",  // أخضر
+            MeeroStrings.s(477) + " 🟣",  // أرجواني
+            MeeroStrings.s(478) + " 🟡",  // أصفر
+            MeeroStrings.s(479) + " 🩷",  // وردي
+            MeeroStrings.s(480) + " ⚪"   // رمادي
+            };
+        final int[] colorValues = {
+            0xFFFF3B30, // أحمر
+            0xFFFF9500, // برتقالي
+            0xFF007AFF, // أزرق
+            0xFF34C759, // أخضر
+            0xFFAF52DE, // أرجواني
+            0xFFFFCC00, // أصفر
+            0xFFFF2D55, // وردي
+            0xFF8E8E93  // رمادي
+            };
+        
+        builder.setItems(colors, (dialog, which) -> {
+            int color = colorValues[which];
+            NaConfig.INSTANCE.getDeletedIconColor().setConfigInt(color);
+            TimeStringHelper.resetDeletedSpan();
+            if (listAdapter != null) {
+                listAdapter.notifyItemChanged(cellGroup.rows.indexOf(deletedIconColorRow));
+            }
+            NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.reloadInterface);
+        });
+        builder.setNegativeButton(getString(R.string.Cancel), null);
+        builder.show();
+    }
 }
